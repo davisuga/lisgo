@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "ocaml": "4.14.x",
+    "@opam/dune": "*",
+    "@opam/ppx_deriving": "*",
+    "@opam/menhir": "*",
+    "@opam/sedlex": "*"
+  },
+  "devDependencies": {
+    "@opam/ocaml-lsp-server": "*",
+    "@opam/ocamlformat": "*"
+  }
+}
