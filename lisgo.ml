@@ -11,7 +11,7 @@ type value =
   | VBool of bool
   | VString of string
 
-exception Type_error
+exception Type_error of string
 
 let rec infer context expr =
   match expr with
@@ -20,23 +20,25 @@ let rec infer context expr =
   | Unit -> TUnit
   | String _ -> TStr
   | Float _ -> TFloat
-  | List expression ->
-      let rec check_list_type (expr_list : expr list) =
-        match expr_list with
         (* TODO: Introduce parametric types for lists *)
-        | [] -> TList TUnit
-        | [ fst ] -> TList (infer context fst)
+  | List [] -> TList TUnit
+  | List (first_expr :: expressions) ->
+      let rec check_list_type expr_list current_typ =
+        match expr_list with
+        | [] -> TList current_typ
+        | [ fst ] ->
+            if current_typ == infer context fst then TList current_typ
+            else raise (Type_error "List type mismatch")
         | fst :: tail ->
-            let fst_typ = infer context fst in
-            if fst_typ == infer context (List tail) then TList fst_typ
-            else raise Type_error
+            if current_typ == infer context fst then
+              check_list_type tail (infer context fst)
+            else raise (Type_error "List type mismatch")
       in
-
-      check_list_type expression
+      check_list_type expressions (infer context first_expr)
   | Variable name -> (
       match Ctx.find_opt name context with
       | Some typ -> typ
-      | None -> raise Type_error)
+      | None -> raise @@ Type_error ("Could not find variable: " ^ name))
   | Abstraction { param; param_type; body } ->
       let context = Ctx.add param param_type context in
       let body_typ = infer context body in
@@ -47,14 +49,24 @@ let rec infer context expr =
       match func_typ with
       | TArrow { param_type; body_typ } when Typ.equal param_type arg_typ ->
           body_typ
-      | _ -> raise Type_error)
+      | TArrow { param_type; _ } ->
+          raise
+            (Type_error
+               ("Your function wants" ^ Typ.show_typ param_type
+              ^ "but you gave it" ^ Typ.show_typ arg_typ))
+      | called ->
+          raise
+          @@ Type_error
+               ("You are fucking calling " ^ Typ.show_typ called
+              ^ " as a function"))
 
 let sum = Application { func = Variable "+"; arg = List [ Int 1; Int 2 ] }
 let sum_and_print = Application { func = Variable "println"; arg = sum }
 
-let initial_context =
+let initial_type_context =
   Ctx.empty
   |> Ctx.add "println" (TArrow { param_type = TInt; body_typ = TUnit })
+  |> Ctx.add "+" (TArrow { param_type = TList TInt; body_typ = TInt })
 
 let () =
   infer initial_type_context sum_and_print |> Typ.show_typ |> print_endline
