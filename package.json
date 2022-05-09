@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@opam/ocaml-lsp-server": "*",
-    "@opam/ocamlformat": "*"
+    "@opam/ocamlformat": "*",
+    "@opam/utop": "*"
   }
 }
