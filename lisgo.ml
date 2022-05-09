@@ -76,7 +76,17 @@ let initial_type_context =
 let () =
   infer initial_type_context sum_and_print |> Typ.show_typ |> print_endline
 
-let _ = Parser.ARROW
+let getarg_opt n = try Some Sys.argv.(n) with Invalid_argument _ -> None
+
+let get_or default optional =
+  match optional with Some value -> value | None -> default
+
+let _ =
+  getarg_opt 1 |> get_or "(println (+ 1 2))"
+  |> Lexer.from_string Parser.expr_opt
+  |> Option.get
+  |> Format.printf "%a\n%!" Expr.pp_expr
+
 (* (println ((+ 1) 2))
 
     ->
