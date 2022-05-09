@@ -66,7 +66,12 @@ let sum_and_print = Application { func = Variable "println"; arg = sum }
 let initial_type_context =
   Ctx.empty
   |> Ctx.add "println" (TArrow { param_type = TInt; body_typ = TUnit })
-  |> Ctx.add "+" (TArrow { param_type = TList TInt; body_typ = TInt })
+  |> Ctx.add "+"
+       (TArrow
+          {
+            param_type = TInt;
+            body_typ = TArrow { param_type = TInt; body_typ = TInt };
+          })
 
 let () =
   infer initial_type_context sum_and_print |> Typ.show_typ |> print_endline
