@@ -49,22 +49,15 @@ let rec infer context expr =
           body_typ
       | _ -> raise Type_error)
 
-let sum =
-  Application
-    {
-      func = Variable "println";
-      arg =
-        Application
-          {
-            func = Application { func = Variable "+"; arg = Int 1 };
-            arg = Int 2;
-          };
-    }
+let sum = Application { func = Variable "+"; arg = List [ Int 1; Int 2 ] }
+let sum_and_print = Application { func = Variable "println"; arg = sum }
 
 let initial_context =
   Ctx.empty
   |> Ctx.add "println" (TArrow { param_type = TInt; body_typ = TUnit })
 
+let () =
+  infer initial_type_context sum_and_print |> Typ.show_typ |> print_endline
 (* (println ((+ 1) 2))
 
     ->
