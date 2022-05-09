@@ -20,7 +20,7 @@ let rec infer context expr =
   | Unit -> TUnit
   | String _ -> TStr
   | Float _ -> TFloat
-        (* TODO: Introduce parametric types for lists *)
+  (* TODO: Introduce parametric types for lists *)
   | List [] -> TList TUnit
   | List (first_expr :: expressions) ->
       let rec check_list_type expr_list current_typ =
@@ -70,6 +70,8 @@ let initial_type_context =
 
 let () =
   infer initial_type_context sum_and_print |> Typ.show_typ |> print_endline
+
+let _ = Lexer.from_string Parser.expr_opt
 (* (println ((+ 1) 2))
 
     ->
