@@ -52,8 +52,8 @@ let rec infer context expr =
       | TArrow { param_type; _ } ->
           raise
             (Type_error
-               ("Your function wants" ^ Typ.show_typ param_type
-              ^ "but you gave it" ^ Typ.show_typ arg_typ))
+               ("Your function wants " ^ Typ.show_typ param_type
+              ^ " but you gave it " ^ Typ.show_typ arg_typ))
       | called ->
           raise
           @@ Type_error
@@ -73,9 +73,6 @@ let initial_type_context =
             body_typ = TArrow { param_type = TInt; body_typ = TInt };
           })
 
-let () =
-  infer initial_type_context sum_and_print |> Typ.show_typ |> print_endline
-
 let getarg_opt n = try Some Sys.argv.(n) with Invalid_argument _ -> None
 
 module Option = struct
@@ -85,12 +82,19 @@ module Option = struct
     match optional with Some value -> value | None -> default
 end
 
+let snd _ a = a
+let fst a _ = a
+
 let _ =
   getarg_opt 1
   |> Option.get_or "(println (+ 1 2))"
   |> Lexer.from_string Parser.expr_opt
   |> Option.get
-  |> Format.printf "%a\n%!" Expr.pp_expr
+  |> fun ast ->
+  Format.printf "AST: %a\n%!" Expr.pp_expr ast;
+  ast |> infer initial_type_context |> fun typ ->
+  Format.printf "TYPE: %a\n%!" Typ.pp_typ typ;
+  typ
 
 type 'a localized = { start_pos : int; end_pos : int; value : 'a }
 
