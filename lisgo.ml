@@ -71,7 +71,7 @@ let initial_type_context =
 let () =
   infer initial_type_context sum_and_print |> Typ.show_typ |> print_endline
 
-let _ = Lexer.from_string Parser.expr_opt
+let _ = Parser.ARROW
 (* (println ((+ 1) 2))
 
     ->
