@@ -41,6 +41,23 @@ let rec tokenizer buf =
   | eof -> EOF
   | _ -> assert false
 
+let string_of_token = function
+  | IDENT s -> "IDENT(" ^ s ^ ")"
+  | TRUE -> "TRUE"
+  | RIGHT_PAREN -> "RIGHT_PAREN"
+  | RIGHT_BRACK -> "RIGHT_BRACK"
+  | LEFT_PAREN -> "LEFT_PAREN"
+  | LEFT_BRACK -> "LEFT_BRACK"
+  | FN -> "FN"
+  | FALSE -> "FALSE"
+  | EOF -> "EOF"
+  | COMMA -> "COMMA"
+  | COLON -> "COLON"
+  | ARROW -> "ARROW"
+  | STRING a -> "STRING(" ^ a ^ ")"
+  | INT i -> "INT(" ^ string_of_int i ^ ")"
+  | FLOAT f -> "FLOAT(" ^ string_of_float f ^ ")"
+
 let provider buf () =
   let token = tokenizer buf in
   let start, stop = Sedlexing.lexing_positions buf in
