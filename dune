@@ -1,6 +1,11 @@
 (executable
- (name lisgo) ; asking dune to build lisgo.ml
+ (name lisgo)
+ (flags
+  (:standard -rectypes))
  (libraries menhirLib sedlex)
  (preprocess
   (pps ppx_deriving.show sedlex.ppx))
  (public_name lisgo.exe))
+
+(menhir
+ (modules parser))
