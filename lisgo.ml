@@ -78,11 +78,16 @@ let () =
 
 let getarg_opt n = try Some Sys.argv.(n) with Invalid_argument _ -> None
 
-let get_or default optional =
-  match optional with Some value -> value | None -> default
+module Option = struct
+  include Option
+
+  let get_or default optional =
+    match optional with Some value -> value | None -> default
+end
 
 let _ =
-  getarg_opt 1 |> get_or "(println (+ 1 2))"
+  getarg_opt 1
+  |> Option.get_or "(println (+ 1 2))"
   |> Lexer.from_string Parser.expr_opt
   |> Option.get
   |> Format.printf "%a\n%!" Expr.pp_expr
@@ -179,33 +184,6 @@ module Go = struct
   type declaration =
     | GenDeclaration of gen_declaration
     | FunDeclaration of fun_declaration
-  (*
-     type typ =
-       | TGoInt of int
-       | TGoBool of bool
-       | TGoFloat64 of float
-       | TGoFunc of {
-           type_params : typ list;
-           params : string list;
-           statements : stmt list;
-         } *)
 
   type file = File of { name : string; declarations : declaration list }
-
-  (* type field_list = { name : string; typ : typ } *)
 end
-
-(* let rec interpret current_context expr =
-   match expr with
-   | Int i -> VInt i
-   | Variable name -> Ctx.find name current_context
-   | Abstraction { param; body } ->
-       VClosure { context = current_context; param; body }
-   | Application { func; arg } -> (
-       let arg = interpret current_context arg in
-       match interpret current_context func with
-       | VClosure { context; param; body } ->
-           interpret (Ctx.add param arg context) body
-       | VNative func -> func arg
-       | VInt _ ->
-           raise @@ Type_error "Int is not a funcion, you cant apply it bro") *)
