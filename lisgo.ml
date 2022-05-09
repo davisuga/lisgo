@@ -92,58 +92,6 @@ let _ =
   |> Option.get
   |> Format.printf "%a\n%!" Expr.pp_expr
 
-(* (println ((+ 1) 2))
-
-    ->
-   Application
-       {
-         func = Variable "println";
-         arg =
-           Application
-             {
-               func = Application { func = Variable "+"; arg = Int 1 };
-               arg = Int 2;
-             };
-       }
-
-    ->
-    File
-      {
-        name = "main.go";
-        declarations =
-          [
-            GenDeclaration
-              (ImportList { imports = [ { path = "fmt"; name = None } ] });
-            FunDeclaration
-              {
-                name = "main";
-                body =
-                  [
-                    ExprStmt
-                      (Application
-                         {
-                           func = Ident "fmt.PrintLn";
-                           arg =
-                             BinExpr { op = Add; left = Int 1; right = Int 2 };
-                         });
-                  ];
-              };
-          ];
-      }
-
-    ->
-
-    package main
-
-    import (
-      "fmt"
-    )
-
-    func main () {
-       fmt.Println(1 + 2)
-    }
-*)
-
 type 'a localized = { start_pos : int; end_pos : int; value : 'a }
 
 module Go = struct
