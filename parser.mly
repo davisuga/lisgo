@@ -49,8 +49,8 @@ let expr_opt :=
   | EOF; { None }
   | e = expr; EOF; { Some e }
 
-let list_fields ==
-    vl = separated_list(COMMA, value); { vl } 
+// let list_fields ==
+//     vl = separated_list(COMMA, value); { vl } 
 
 let value ==
   | i = INT; { Int i }
@@ -59,14 +59,19 @@ let value ==
   | f = FLOAT; { Float f }
   | TRUE; { True }
   | FALSE; { False }
-  | LEFT_BRACK; vl = list_fields; RIGHT_BRACK; { List vl  }
-
-  
-
-// (fn parameter:int (println ( + 1 2)))
-let abstraction ==
   | FN; param = IDENT; COLON; param_type = typ; body = expr;
     { Abstraction { param; param_type ; body } }
+  // | LEFT_BRACK; vl = list_fields; RIGHT_BRACK; { List vl  }
+
+  
+let expr :=
+  | application
+  | sub_expr
+
+// (fn [parameter:int] (println ( + 1 2)))
+// let abstraction ==
+//   | FN; param = IDENT; COLON; param_type = typ; body = expr;
+//     { Abstraction { param; param_type ; body } }
 
 let sub_expr :=
   | value
@@ -74,9 +79,6 @@ let sub_expr :=
 
 let application :=
   | sub_expr
-  | e1 = application; e2 = sub_expr;
+  | LEFT_PAREN; e1 = application; e2 = sub_expr;
     { Application { func = e1; arg = e2 } }
 
-let expr :=
-  | abstraction
-  | application

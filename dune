@@ -5,7 +5,7 @@
  (libraries menhirLib sedlex)
  (preprocess
   (pps ppx_deriving.show sedlex.ppx))
- (public_name lisgo.exe))
+ (modes js))
 
 (menhir
  (modules parser))

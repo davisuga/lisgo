@@ -87,7 +87,7 @@ let fst a _ = a
 
 let _ =
   getarg_opt 1
-  |> Option.get_or "(println (+ 1 2))"
+  |> Option.get_or "(println (+ 1 3 4))"
   |> Lexer.from_string Parser.expr_opt
   |> Option.get
   |> fun ast ->
