@@ -10,5 +10,6 @@ type expr =
   | Abstraction of { param_type : typ; param : string; body : expr }
   | Application of { func : expr; arg : expr }
   | List of expr list
+  | SExpr of expr list
   | Unit
 [@@deriving show { with_path = false }]

@@ -11,18 +11,43 @@ let whitespace = [%sedlex.regexp? Plus (' ' | '\n' | '\t')]
 let lower_alpha = [%sedlex.regexp? 'a' .. 'z']
 let upper_alpha = [%sedlex.regexp? 'A' .. 'Z']
 let number = [%sedlex.regexp? '0' .. '9']
-
-let ident =
-  [%sedlex.regexp? lower_alpha, Star (lower_alpha | number | '_') | bin_op]
-
+let ident = [%sedlex.regexp? lower_alpha, Star (lower_alpha | number | '_') | bin_op]
 let int_literal = [%sedlex.regexp? Plus number]
 let float_literal = [%sedlex.regexp? Plus number, '.', Plus number]
 
 let symbol =
   [%sedlex.regexp?
-    ( '+' | '-' | '*' | '/' | '%' | '^' | '&' | '|' | '~' | '!' | '=' | '<'
-    | '>' | '.' | ',' | ':' | ';' | '(' | ')' | '[' | ']' | '{' | '}' | '#'
-    | '@' | '$' | '?' | '\\' | '"' | '\'' | '`' )]
+    ( '+'
+    | '-'
+    | '*'
+    | '/'
+    | '%'
+    | '^'
+    | '&'
+    | '|'
+    | '~'
+    | '!'
+    | '='
+    | '<'
+    | '>'
+    | '.'
+    | ','
+    | ':'
+    | ';'
+    | '('
+    | ')'
+    | '['
+    | ']'
+    | '{'
+    | '}'
+    | '#'
+    | '@'
+    | '$'
+    | '?'
+    | '\\'
+    | '"'
+    | '\''
+    | '`' )]
 
 let string_literal =
   [%sedlex.regexp?
@@ -32,13 +57,13 @@ let get_string_content s = String.sub s 1 (String.length s - 2)
 
 let rec tokenizer buf =
   match%sedlex buf with
+  | "true" -> TRUE
+  | "false" -> FALSE
   | whitespace -> tokenizer buf
   | ident -> IDENT (lexeme buf)
   | int_literal -> INT (lexeme buf |> int_of_string)
   | string_literal -> STRING (get_string_content (lexeme buf))
   | float_literal -> FLOAT (lexeme buf |> float_of_string)
-  | "true" -> TRUE
-  | "false" -> FALSE
   | ',' -> COMMA
   | "fn" -> FN
   | ':' -> COLON
@@ -71,8 +96,7 @@ let string_of_token = function
 let provider buf () =
   let token = tokenizer buf in
   let start, stop = Sedlexing.lexing_positions buf in
-  (token, start, stop)
+  token, start, stop
 
 let from_string f string =
-  provider (from_string string)
-  |> MenhirLib.Convert.Simplified.traditional2revised f
+  provider (from_string string) |> MenhirLib.Convert.Simplified.traditional2revised f

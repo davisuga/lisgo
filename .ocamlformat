@@ -1,0 +1,4 @@
+profile = janestreet
+version = 0.21.0
+type-decl = compact
+let-binding-spacing = compact
