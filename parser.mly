@@ -65,8 +65,12 @@ let value ==
 
   
 let expr :=
-  | application
-  | sub_expr
+  | value
+  | LEFT_PAREN; e = expr; RIGHT_PAREN; { e }
+  | LEFT_PAREN; elist = exprs; RIGHT_PAREN; { SExpr elist }
+  
+
+let exprs := list(expr)
 
 // (fn [parameter:int] (println ( + 1 2)))
 // let abstraction ==
