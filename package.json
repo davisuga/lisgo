@@ -4,7 +4,9 @@
     "@opam/dune": "*",
     "@opam/ppx_deriving": "*",
     "@opam/menhir": "*",
-    "@opam/sedlex": "*"
+    "@opam/sedlex": "*",
+    "@opam/fieldslib": "*",
+    "@opam/ppx_jane": "*"
   },
   "devDependencies": {
     "@opam/ocaml-lsp-server": "*",
