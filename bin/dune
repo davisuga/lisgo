@@ -1,0 +1,6 @@
+(executable
+ (public_name lisgo)
+ (flags
+  (:standard -rectypes))
+ (name main)
+ (libraries lisgo))

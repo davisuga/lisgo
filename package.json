@@ -11,6 +11,7 @@
   "devDependencies": {
     "@opam/ocaml-lsp-server": "*",
     "@opam/ocamlformat": "*",
-    "@opam/utop": "*"
+    "@opam/utop": "*",
+    "@opam/alcotest": "*"
   }
 }

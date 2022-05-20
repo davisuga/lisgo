@@ -17,10 +17,12 @@ exception Type_error of string
    match expr_list with
    | [] -> List [Unit]
    | (x:: xs) ->
-     match x with
-     | (Variable s) -> List [Symbol s]
+    match x with
+    | (Variable s) -> List [Symbol s]
      | (List l) -> List [List l]
      | (Vector v) -> List [Vector v] *)
+
+let _ = Golang.CodeGen.of_typ Golang.Types.TInt8
 
 let rec infer context expr =
   let rec check_literal_list_type expr_list current_typ =
@@ -119,7 +121,5 @@ let print_prog_info p =
   |> fun typ ->
   Format.printf "TYPE: %a\n%!" Typ.pp_typ typ;
   typ
-
-let _ = [ "1"; "\"1\""; "+"; "1.1"; "true"; "false"; "(+ 1)" ] |> List.map print_prog_info
 
 type 'a localized = { start_pos : int; end_pos : int; value : 'a }

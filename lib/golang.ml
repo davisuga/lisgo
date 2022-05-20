@@ -103,7 +103,7 @@ module CodeGen = struct
     | TPointer t -> "*" ^ of_typ t
     | TFunction { args; ret } ->
       Printf.sprintf
-        "func(%s)%s"
+        "func(%s) %s"
         (List.map of_type_parameter args |> String.concat ", ")
         (of_typ ret)
 

@@ -1,11 +1,10 @@
-(executable
+(library
  (name lisgo)
  (flags
   (:standard -rectypes))
  (libraries menhirLib fieldslib sedlex)
  (preprocess
-  (pps ppx_deriving.show sedlex.ppx ppx_jane))
- (modes js))
+  (pps ppx_deriving.show sedlex.ppx ppx_jane)))
 
 (menhir
  (modules parser))

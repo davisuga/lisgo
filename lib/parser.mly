@@ -49,8 +49,8 @@ let expr_opt :=
   | EOF; { None }
   | e = expr; EOF; { Some e }
 
-// let list_fields ==
-//     vl = separated_list(COMMA, value); { vl } 
+let list_fields ==
+    vl = separated_list(COMMA, value); { vl } 
 
 let value ==
   | i = INT; { Int i }
@@ -61,7 +61,7 @@ let value ==
   | FALSE; { False }
   | FN; param = IDENT; COLON; param_type = typ; body = expr;
     { Abstraction { param; param_type ; body } }
-  // | LEFT_BRACK; vl = list_fields; RIGHT_BRACK; { List vl  }
+  | LEFT_BRACK; vl = list_fields; RIGHT_BRACK; { List vl  }
 
   
 let expr :=

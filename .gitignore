@@ -10,7 +10,7 @@
 node_modules
 # ocamlbuild working directory
 _build/
-
+_esy
 # ocamlbuild targets
 *.byte
 *.native
