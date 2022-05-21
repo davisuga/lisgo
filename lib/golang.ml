@@ -32,7 +32,7 @@ type expr =
   | Int of int
   | String of string
   | Ident of string
-  | Application of { func_name : string; args : expr list }
+  | Application of { func : expr; args : expr list }
   | BinExpr of { op : bin_operation; left : expr; right : expr }
 
 type stmt =
@@ -40,6 +40,7 @@ type stmt =
   | AssignStmt of { left : string; right : expr }
   | ExprStmt of expr
   | ReturnStmt of { results : expr list }
+  | IfStmt of { cond : expr; body : stmt list; else_block : stmt list option }
 
 type gen_declaration =
   | ImportList of { imports : import list }
@@ -52,9 +53,77 @@ type declaration = GenDeclaration of gen_declaration | FunDeclaration of fun_dec
 type file = { name : string; declarations : declaration list }
 
 let empty_file =
-  { name = "main.go"
-  ; declarations =
+  { name = "main";
+    declarations =
       [ FunDeclaration { name = "main"; body = []; params = []; ret = TVoid } ]
+  }
+
+let hello_word =
+  { name = "main";
+    declarations =
+      [ GenDeclaration (ImportList { imports = [ { name = None; path = "fmt" } ] });
+        FunDeclaration
+          { name = "main";
+            body =
+              [ ExprStmt
+                  (Application
+                     { func = Ident "fmt.Println"; args = [ String "Hello, World!" ] })
+              ];
+            params = [];
+            ret = TVoid
+          }
+      ]
+  }
+
+let go_fibbonacci =
+  { name = "main";
+    declarations =
+      [ GenDeclaration (ImportList { imports = [ { name = None; path = "fmt" } ] });
+        FunDeclaration
+          { name = "fib";
+            params = [ { name = "n"; typ = TInt } ];
+            ret = TInt;
+            body =
+              [ IfStmt
+                  { cond = BinExpr { left = Ident "n"; op = Leq; right = Int 1 };
+                    body = [ ReturnStmt { results = [ Ident "n" ] } ];
+                    else_block = None
+                  };
+                ReturnStmt
+                  { results =
+                      [ BinExpr
+                          { left =
+                              Application
+                                { func = Ident "fib";
+                                  args =
+                                    [ BinExpr
+                                        { left = Ident "n"; op = Sub; right = Int 1 }
+                                    ]
+                                };
+                            op = Add;
+                            right =
+                              Application
+                                { func = Ident "fib";
+                                  args =
+                                    [ BinExpr
+                                        { left = Ident "n"; op = Sub; right = Int 2 }
+                                    ]
+                                }
+                          }
+                      ]
+                  }
+              ]
+          };
+        FunDeclaration
+          { name = "main";
+            body =
+              [ DeclStmt { name = "x"; value = Int 0 };
+                ExprStmt (Application { func = Ident "fib"; args = [ Ident "x" ] })
+              ];
+            params = [];
+            ret = TVoid
+          }
+      ]
   }
 
 module CodeGen = struct
@@ -63,8 +132,8 @@ module CodeGen = struct
     | Int i -> string_of_int i
     | String s -> "\"" ^ s ^ "\""
     | Ident s -> s
-    | Application { func_name; args } ->
-      Printf.sprintf "%s(%s)" func_name (List.map of_expr args |> String.concat " ")
+    | Application { func; args } ->
+      Printf.sprintf "%s(%s)" (of_expr func) (List.map of_expr args |> String.concat " ")
     | BinExpr { op; left; right } ->
       Printf.sprintf
         "%s %s %s"
@@ -85,6 +154,7 @@ module CodeGen = struct
 
   let rec of_typ typ =
     match typ with
+    | TInt -> "int"
     | TInt8 -> "int8"
     | TInt16 -> "int16"
     | TInt32 -> "int32"
@@ -104,22 +174,33 @@ module CodeGen = struct
     | TPointer t -> "*" ^ of_typ t
     | TFunction { args; ret } ->
       Printf.sprintf
-        "func(%s) %s"
+        {|func(%s) %s|}
         (List.map of_type_parameter args |> String.concat ", ")
         (of_typ ret)
 
   and of_type_parameter (param : func_type_parameter) =
     Printf.sprintf "%s %s" param.name (of_typ param.typ)
 
-  let of_statement stmt =
+  let rec of_statement stmt =
     match stmt with
     | DeclStmt { name; value } -> Printf.sprintf "var %s = %s\n" name (of_expr value)
     | AssignStmt { left; right } -> left ^ " = " ^ of_expr right ^ "\n"
     | ExprStmt expr -> of_expr expr ^ "\n"
     | ReturnStmt { results } ->
       "return " ^ (results |> List.map of_expr |> String.concat " ")
+    | IfStmt { cond; body; else_block } ->
+      Printf.sprintf
+        "if %s {\n%s\n}%s\n"
+        (of_expr cond)
+        (body |> List.map of_statement |> String.concat "")
+        (match else_block with
+        | Some else_block ->
+          Printf.sprintf
+            "\nelse {\n%s\n}"
+            (else_block |> List.map of_statement |> String.concat "")
+        | None -> "")
 
-  let of_import imp = Printf.sprintf "import \"%s\"\n" imp.path
+  let of_import imp = Printf.sprintf " \"%s\"\n" imp.path
 
   let of_declaration (declr : declaration) =
     match declr with
@@ -131,7 +212,9 @@ module CodeGen = struct
         (of_typ ret)
         (body |> List.map of_statement |> String.concat "")
     | GenDeclaration (ImportList { imports }) ->
-      Printf.sprintf "import (%s)\n" (imports |> List.map of_import |> String.concat ", ")
+      Printf.sprintf
+        "import (\n%s)\n"
+        (imports |> List.map of_import |> String.concat ", ")
     | GenDeclaration (TypeDeclaration { name; typ }) ->
       Printf.sprintf "type %s %s\n" name typ
 
