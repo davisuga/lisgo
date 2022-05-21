@@ -116,10 +116,10 @@ let print_prog_info p =
   |> Option.get
   |> fun ast ->
   Format.printf "AST: %a\n%!" Expr.pp_expr ast;
-  ast
-  |> infer initial_type_context
+  (* ast *)
+  (* |> infer initial_type_context
   |> fun typ ->
-  Format.printf "TYPE: %a\n%!" Typ.pp_typ typ;
-  typ
+  Format.printf "TYPE: %a\n%!" Typ.pp_typ typ; *)
+  ast
 
 type 'a localized = { start_pos : int; end_pos : int; value : 'a }
