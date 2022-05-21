@@ -3,6 +3,7 @@ type import = { name : string option; path : string }
 
 module Types = struct
   type t =
+    | TInt
     | TInt8
     | TInt16
     | TInt32
