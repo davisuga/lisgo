@@ -1,3 +1,5 @@
+let format = Printf.sprintf
+
 type bin_operation = Add | Sub | Mul | Div | Mod | Eq | Neq | Lt | Leq | Gt | Geq
 type import = { name : string option; path : string }
 
@@ -133,9 +135,9 @@ module CodeGen = struct
     | String s -> "\"" ^ s ^ "\""
     | Ident s -> s
     | Application { func; args } ->
-      Printf.sprintf "%s(%s)" (of_expr func) (List.map of_expr args |> String.concat " ")
+      format "%s(%s)" (of_expr func) (List.map of_expr args |> String.concat " ")
     | BinExpr { op; left; right } ->
-      Printf.sprintf
+      format
         "%s %s %s"
         (of_expr left)
         (match op with
@@ -169,57 +171,54 @@ module CodeGen = struct
     | TVoid -> ""
     | TStr -> "string"
     | TBool -> "bool"
-    | TList t -> Printf.sprintf "[]%s" (of_typ t)
+    | TList t -> format "[]%s" (of_typ t)
     | TStruct { name } -> name
     | TPointer t -> "*" ^ of_typ t
     | TFunction { args; ret } ->
-      Printf.sprintf
+      format
         {|func(%s) %s|}
         (List.map of_type_parameter args |> String.concat ", ")
         (of_typ ret)
 
   and of_type_parameter (param : func_type_parameter) =
-    Printf.sprintf "%s %s" param.name (of_typ param.typ)
+    format "%s %s" param.name (of_typ param.typ)
 
   let rec of_statement stmt =
     match stmt with
-    | DeclStmt { name; value } -> Printf.sprintf "var %s = %s\n" name (of_expr value)
+    | DeclStmt { name; value } -> format "var %s = %s\n" name (of_expr value)
     | AssignStmt { left; right } -> left ^ " = " ^ of_expr right ^ "\n"
     | ExprStmt expr -> of_expr expr ^ "\n"
     | ReturnStmt { results } ->
       "return " ^ (results |> List.map of_expr |> String.concat " ")
     | IfStmt { cond; body; else_block } ->
-      Printf.sprintf
+      format
         "if %s {\n%s\n}%s\n"
         (of_expr cond)
         (body |> List.map of_statement |> String.concat "")
         (match else_block with
         | Some else_block ->
-          Printf.sprintf
+          format
             "\nelse {\n%s\n}"
             (else_block |> List.map of_statement |> String.concat "")
         | None -> "")
 
-  let of_import imp = Printf.sprintf " \"%s\"\n" imp.path
+  let of_import imp = format " \"%s\"\n" imp.path
 
   let of_declaration (declr : declaration) =
     match declr with
     | FunDeclaration { name; params; body; ret } ->
-      Printf.sprintf
+      format
         "func %s(%s) %s {\n%s}\n"
         name
         (params |> List.map of_type_parameter |> String.concat ", ")
         (of_typ ret)
         (body |> List.map of_statement |> String.concat "")
     | GenDeclaration (ImportList { imports }) ->
-      Printf.sprintf
-        "import (\n%s)\n"
-        (imports |> List.map of_import |> String.concat ", ")
-    | GenDeclaration (TypeDeclaration { name; typ }) ->
-      Printf.sprintf "type %s %s\n" name typ
+      format "import (\n%s)\n" (imports |> List.map of_import |> String.concat ", ")
+    | GenDeclaration (TypeDeclaration { name; typ }) -> format "type %s %s\n" name typ
 
   let of_file (file : file) =
-    Printf.sprintf
+    format
       "package %s\n\n%s"
       file.name
       (file.declarations |> List.map of_declaration |> String.concat "")
