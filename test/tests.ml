@@ -85,6 +85,42 @@ let test_declarations_print () =
 let test_file_prints () = test_codegen_results test_file_print expected_file_print_pairs
 let test_types_print () = expected_typ_print_pairs |> List.map test_type_print |> ignore
 
+let expected_asts =   
+  let open Lisgo.Expr in
+  let if_fib_ast =  (SExpr
+    [(Variable "if");
+      (SExpr [(Variable "<"); (Variable "="); (Variable "n"); (Int 1)]);
+      (Variable "n");
+      (SExpr
+         [(Variable "+");
+           (SExpr
+              [(Variable "fib");
+                (SExpr [(Variable "-"); (Variable "n"); (Int 1)])]);
+           (SExpr
+              [(Variable "fib");
+                (SExpr [(Variable "-"); (Variable "n"); (Int 2)])])
+           ])
+      ]) in
+  [ "1", Int 1;
+"\"1\"", String "1";
+"+", Variable "+";
+"1.1", Float 1.1;
+"true",True ;
+"false", False;
+"(+ 1)", (SExpr [(Variable "+"); (Int 1)]);
+{|(if (<= n 1) 
+  (n)
+  (+ (fib (- n 1)) (fib (- n 2))))|},if_fib_ast;
+"(fn n:int (+ n n))", Abstraction {param_type = TInt; param = "n";
+body = (SExpr [(Variable "+"); (Variable "n"); (Variable "n")])};
+"(def fib (fun n:int (if (<= n 1) (n)  (+ (fib (- n 1)) (fib (- n 2))))))", (SExpr [])
+]
+
+let test_info () =  
+  
+  [ "1"; "\"1\""; "+"; "1.1"; "true"; "false"; "(+ 1)" ]
+|> List.map Lisgo.Lib.print_prog_info
+
 (* Run it *)
 let () =
   let open Alcotest in
@@ -96,4 +132,9 @@ let () =
       "file codegen ", [ test_case "File printing" `Quick test_file_prints ]
     ];
   run "Parsing" 
-  []
+  [
+    "some expressions", [
+      test_case "Parsing of simple expressions" `Quick Parser.parse_expression "1 + 2"
+    
+    ]
+  ]
