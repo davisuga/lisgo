@@ -57,6 +57,7 @@ let get_string_content s = String.sub s 1 (String.length s - 2)
 
 let rec tokenizer buf =
   match%sedlex buf with
+  | "fn" -> FN
   | "true" -> TRUE
   | "false" -> FALSE
   | whitespace -> tokenizer buf
@@ -65,7 +66,6 @@ let rec tokenizer buf =
   | string_literal -> STRING (get_string_content (lexeme buf))
   | float_literal -> FLOAT (lexeme buf |> float_of_string)
   | ',' -> COMMA
-  | "fn" -> FN
   | ':' -> COLON
   | "->" -> ARROW
   | '(' -> LEFT_PAREN
@@ -77,13 +77,13 @@ let rec tokenizer buf =
   | _ -> assert false
 
 let string_of_token = function
+  | FN -> "FN"
   | IDENT s -> "IDENT(" ^ s ^ ")"
   | TRUE -> "TRUE"
   | RIGHT_PAREN -> "RIGHT_PAREN"
   | RIGHT_BRACK -> "RIGHT_BRACK"
   | LEFT_PAREN -> "LEFT_PAREN"
   | LEFT_BRACK -> "LEFT_BRACK"
-  | FN -> "FN"
   | FALSE -> "FALSE"
   | EOF -> "EOF"
   | COMMA -> "COMMA"
