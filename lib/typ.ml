@@ -13,7 +13,7 @@ let rec equal a b =
   | a, b when a == b -> true
   | TList a, TList b -> equal a b
   | TInt, TInt -> true
-  | ( TArrow { param_type = param_a; body_typ = body_a }
-    , TArrow { param_type = param_b; body_typ = body_b } ) ->
+  | ( TArrow { param_type = param_a; body_typ = body_a },
+      TArrow { param_type = param_b; body_typ = body_b } ) ->
     equal param_a param_b && equal body_a body_b
   | _ -> false
