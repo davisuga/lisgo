@@ -7,4 +7,5 @@
   (pps ppx_deriving.show sedlex.ppx ppx_jane)))
 
 (menhir
- (modules parser))
+ (modules parser)
+ (flags --explain --inspection --table --dump))
