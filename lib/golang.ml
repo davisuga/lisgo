@@ -28,111 +28,124 @@ module Types = struct
   and func_type_parameter = { name : string; typ : t }
 end
 
-open Types
+module AST = struct
+  open Types
 
-type expr =
-  | Int of int
-  | String of string
-  | Ident of string
-  | Application of { func : expr; args : expr list }
-  | BinExpr of { op : bin_operation; left : expr; right : expr }
+  type expr =
+    | Int of int
+    | String of string
+    | Ident of string
+    | Application of { func : expr; args : expr list }
+    | BinExpr of { op : bin_operation; left : expr; right : expr }
+    | True
+    | False
+    | Float of float
 
-type stmt =
-  | DeclStmt of { name : string; value : expr }
-  | AssignStmt of { left : string; right : expr }
-  | ExprStmt of expr
-  | ReturnStmt of { results : expr list }
-  | IfStmt of { cond : expr; body : stmt list; else_block : stmt list option }
+  type stmt =
+    | DeclStmt of { name : string; value : expr }
+    | AssignStmt of { left : string; right : expr }
+    | ExprStmt of expr
+    | ReturnStmt of { results : expr list }
+    | IfStmt of { cond : expr; body : stmt list; else_block : stmt list option }
 
-type gen_declaration =
-  | ImportList of { imports : import list }
-  | TypeDeclaration of { name : string; typ : string }
+  type gen_declaration =
+    | ImportList of { imports : import list }
+    | TypeDeclaration of { name : string; typ : string }
 
-type fun_declaration =
-  { body : stmt list; name : string; params : func_type_parameter list; ret : Types.t }
+  type fun_declaration =
+    { body : stmt list; name : string; params : func_type_parameter list; ret : Types.t }
 
-type declaration = GenDeclaration of gen_declaration | FunDeclaration of fun_declaration
-type file = { name : string; declarations : declaration list }
+  type declaration =
+    | GenDeclaration of gen_declaration
+    | FunDeclaration of fun_declaration
 
-let empty_file =
-  { name = "main";
-    declarations =
-      [ FunDeclaration { name = "main"; body = []; params = []; ret = TVoid } ]
-  }
+  type file = { name : string; declarations : declaration list }
 
-let hello_word =
-  { name = "main";
-    declarations =
-      [ GenDeclaration (ImportList { imports = [ { name = None; path = "fmt" } ] });
-        FunDeclaration
-          { name = "main";
-            body =
-              [ ExprStmt
-                  (Application
-                     { func = Ident "fmt.Println"; args = [ String "Hello, World!" ] })
-              ];
-            params = [];
-            ret = TVoid
-          }
-      ]
-  }
+  let empty_file =
+    { name = "main";
+      declarations =
+        [ FunDeclaration { name = "main"; body = []; params = []; ret = TVoid } ]
+    }
 
-let go_fibbonacci =
-  { name = "main";
-    declarations =
-      [ GenDeclaration (ImportList { imports = [ { name = None; path = "fmt" } ] });
-        FunDeclaration
-          { name = "fib";
-            params = [ { name = "n"; typ = TInt } ];
-            ret = TInt;
-            body =
-              [ IfStmt
-                  { cond = BinExpr { left = Ident "n"; op = Leq; right = Int 1 };
-                    body = [ ReturnStmt { results = [ Ident "n" ] } ];
-                    else_block = None
-                  };
-                ReturnStmt
-                  { results =
-                      [ BinExpr
-                          { left =
-                              Application
-                                { func = Ident "fib";
-                                  args =
-                                    [ BinExpr
-                                        { left = Ident "n"; op = Sub; right = Int 1 }
-                                    ]
-                                };
-                            op = Add;
-                            right =
-                              Application
-                                { func = Ident "fib";
-                                  args =
-                                    [ BinExpr
-                                        { left = Ident "n"; op = Sub; right = Int 2 }
-                                    ]
-                                }
-                          }
-                      ]
-                  }
-              ]
-          };
-        FunDeclaration
-          { name = "main";
-            body =
-              [ DeclStmt { name = "x"; value = Int 0 };
-                ExprStmt (Application { func = Ident "fib"; args = [ Ident "x" ] })
-              ];
-            params = [];
-            ret = TVoid
-          }
-      ]
-  }
+  let hello_word =
+    { name = "main";
+      declarations =
+        [ GenDeclaration (ImportList { imports = [ { name = None; path = "fmt" } ] });
+          FunDeclaration
+            { name = "main";
+              body =
+                [ ExprStmt
+                    (Application
+                       { func = Ident "fmt.Println"; args = [ String "Hello, World!" ] })
+                ];
+              params = [];
+              ret = TVoid
+            }
+        ]
+    }
+
+  let go_fibbonacci =
+    { name = "main";
+      declarations =
+        [ GenDeclaration (ImportList { imports = [ { name = None; path = "fmt" } ] });
+          FunDeclaration
+            { name = "fib";
+              params = [ { name = "n"; typ = TInt } ];
+              ret = TInt;
+              body =
+                [ IfStmt
+                    { cond = BinExpr { left = Ident "n"; op = Leq; right = Int 1 };
+                      body = [ ReturnStmt { results = [ Ident "n" ] } ];
+                      else_block = None
+                    };
+                  ReturnStmt
+                    { results =
+                        [ BinExpr
+                            { left =
+                                Application
+                                  { func = Ident "fib";
+                                    args =
+                                      [ BinExpr
+                                          { left = Ident "n"; op = Sub; right = Int 1 }
+                                      ]
+                                  };
+                              op = Add;
+                              right =
+                                Application
+                                  { func = Ident "fib";
+                                    args =
+                                      [ BinExpr
+                                          { left = Ident "n"; op = Sub; right = Int 2 }
+                                      ]
+                                  }
+                            }
+                        ]
+                    }
+                ]
+            };
+          FunDeclaration
+            { name = "main";
+              body =
+                [ DeclStmt { name = "x"; value = Int 0 };
+                  ExprStmt (Application { func = Ident "fib"; args = [ Ident "x" ] })
+                ];
+              params = [];
+              ret = TVoid
+            }
+        ]
+    }
+end
 
 module CodeGen = struct
+  open AST
+
   let rec of_expr expr =
     match expr with
     | Int i -> string_of_int i
     | String s -> "\"" ^ s ^ "\""
+    | True -> "true"
+    | False -> "false"
+    | Float f -> string_of_float f
     | Ident s -> s
     | Application { func; args } ->
       format "%s(%s)" (of_expr func) (List.map of_expr args |> String.concat " ")
@@ -153,6 +166,8 @@ module CodeGen = struct
         | Gt -> ">"
         | Geq -> ">=")
         (of_expr right)
+
+  open Types
 
   let rec of_typ typ =
     match typ with
