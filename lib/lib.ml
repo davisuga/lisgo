@@ -37,7 +37,7 @@ let rec infer context expr =
       then check_literal_list_type tail (infer context fst)
       else raise (Type_error "List type mismatch")
   in
-  let check_sexpr expr_list =
+  (* let check_sexpr expr_list =
     match expr_list with
     | [] -> List [ Unit ]
     | x :: _ ->
@@ -46,10 +46,10 @@ let rec infer context expr =
       | List l -> List [ List l ]
       | Int v -> List [ Int v ]
       | _ -> List [ Unit ])
-  in
+  in *)
   match expr with
   | Int _ -> TInt
-  | SExpr expr_list -> infer context (check_sexpr expr_list)
+  (* | SExpr expr_list -> infer context (check_sexpr expr_list) *)
   | True | False -> TBool
   | Unit -> TUnit
   | String _ -> TStr
@@ -110,6 +110,7 @@ let snd _ a = a
 let fst a _ = a
 
 let print_prog_info p =
+  print_endline @@ "Code: " ^ p;
   getarg_opt 1
   |> Option.get_or p
   |> Lexer.from_string Parser.expr_opt
