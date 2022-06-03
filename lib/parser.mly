@@ -67,7 +67,7 @@ let value ==
 let expr :=
   | value
   | LEFT_PAREN; e = expr; RIGHT_PAREN; { e }
-  | LEFT_PAREN; elist = exprs; RIGHT_PAREN; { SExpr elist }
+  | LEFT_PAREN; elist = exprs; RIGHT_PAREN; { parse_sexpr(elist) }
   
 
 let exprs := list(expr)
