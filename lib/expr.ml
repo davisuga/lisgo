@@ -29,3 +29,51 @@ let parse_sexpr expr_list =
         (Format.sprintf "You can't apply a %s to %s" (show_expr func) (show_expr args)))
   | func :: args -> Application { func; arg = List args }
 
+let _ =
+  Application
+    { func = Variable "def";
+      arg =
+        List
+          [ Variable "fib";
+            Abstraction
+              { param_type = TInt;
+                param = "n";
+                body =
+                  Application
+                    { func = Variable "if";
+                      arg =
+                        List
+                          [ Application
+                              { func = Variable "<";
+                                arg = List [ Variable "="; Variable "n"; Int 1 ]
+                              };
+                            Variable "n";
+                            Application
+                              { func = Variable "+";
+                                arg =
+                                  List
+                                    [ Application
+                                        { func = Variable "fib";
+                                          arg =
+                                            Application
+                                              { func = Variable "-";
+                                                arg = List [ Variable "n"; Int 1 ]
+                                              }
+                                        };
+                                      Application
+                                        { func = Variable "fib";
+                                          arg =
+                                            Application
+                                              { func = Variable "-";
+                                                arg = List [ Variable "n"; Int 2 ]
+                                              }
+                                        }
+                                    ]
+                              }
+                          ]
+                    }
+              }
+          ]
+    }
+
+
