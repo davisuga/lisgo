@@ -1,0 +1,876 @@
+State 0:
+## Known stack suffix:
+##
+## LR(1) items:
+expr_opt' -> . expr_opt [ # ]
+## Transitions:
+-- On TRUE shift to state 1
+-- On STRING shift to state 2
+-- On LEFT_PAREN shift to state 3
+-- On LEFT_BRACK shift to state 4
+-- On INT shift to state 26
+-- On IDENT shift to state 27
+-- On FN shift to state 28
+-- On FLOAT shift to state 32
+-- On FALSE shift to state 33
+-- On EOF shift to state 62
+-- On expr_opt shift to state 63
+-- On expr shift to state 64
+## Reductions:
+
+State 1:
+## Known stack suffix:
+## TRUE
+## LR(1) items:
+expr -> TRUE . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> TRUE
+
+State 2:
+## Known stack suffix:
+## STRING
+## LR(1) items:
+expr -> STRING . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> STRING
+
+State 3:
+## Known stack suffix:
+## LEFT_PAREN
+## LR(1) items:
+expr -> LEFT_PAREN . expr RIGHT_PAREN [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+expr -> LEFT_PAREN . exprs RIGHT_PAREN [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+-- On TRUE shift to state 1
+-- On STRING shift to state 2
+-- On LEFT_PAREN shift to state 3
+-- On LEFT_BRACK shift to state 4
+-- On INT shift to state 26
+-- On IDENT shift to state 27
+-- On FN shift to state 28
+-- On FLOAT shift to state 32
+-- On FALSE shift to state 33
+-- On list(expr) shift to state 55
+-- On exprs shift to state 56
+-- On expr shift to state 58
+## Reductions:
+-- On RIGHT_PAREN
+--   reduce production list(expr) ->
+
+State 4:
+## Known stack suffix:
+## LEFT_BRACK
+## LR(1) items:
+expr -> LEFT_BRACK . loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 46
+-- On loption(separated_nonempty_list(COMMA,value)) shift to state 53
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production loption(separated_nonempty_list(COMMA,value)) ->
+
+State 5:
+## Known stack suffix:
+## TRUE
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> TRUE . [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> TRUE . COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On COMMA shift to state 6
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> TRUE
+
+State 6:
+## Known stack suffix:
+## TRUE COMMA
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> TRUE COMMA . separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 52
+## Reductions:
+
+State 7:
+## Known stack suffix:
+## STRING
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> STRING . [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> STRING . COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On COMMA shift to state 8
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> STRING
+
+State 8:
+## Known stack suffix:
+## STRING COMMA
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> STRING COMMA . separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 51
+## Reductions:
+
+State 9:
+## Known stack suffix:
+## LEFT_BRACK
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> LEFT_BRACK . loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> LEFT_BRACK . loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 46
+-- On loption(separated_nonempty_list(COMMA,value)) shift to state 47
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production loption(separated_nonempty_list(COMMA,value)) ->
+
+State 10:
+## Known stack suffix:
+## INT
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> INT . [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> INT . COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On COMMA shift to state 11
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> INT
+
+State 11:
+## Known stack suffix:
+## INT COMMA
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> INT COMMA . separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 45
+## Reductions:
+
+State 12:
+## Known stack suffix:
+## IDENT
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> IDENT . [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> IDENT . COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On COMMA shift to state 13
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> IDENT
+
+State 13:
+## Known stack suffix:
+## IDENT COMMA
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> IDENT COMMA . separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 44
+## Reductions:
+
+State 14:
+## Known stack suffix:
+## FN
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FN . IDENT COLON typ expr [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> FN . IDENT COLON typ expr COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On IDENT shift to state 15
+## Reductions:
+
+State 15:
+## Known stack suffix:
+## FN IDENT
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FN IDENT . COLON typ expr [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> FN IDENT . COLON typ expr COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On COLON shift to state 16
+## Reductions:
+
+State 16:
+## Known stack suffix:
+## FN IDENT COLON
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FN IDENT COLON . typ expr [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> FN IDENT COLON . typ expr COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On LEFT_PAREN shift to state 17
+-- On IDENT shift to state 18
+-- On typ shift to state 25
+## Reductions:
+
+State 17:
+## Known stack suffix:
+## LEFT_PAREN
+## LR(1) items:
+typ -> LEFT_PAREN . typ RIGHT_PAREN [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+typ -> LEFT_PAREN . typ RIGHT_PAREN ARROW typ [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+## Transitions:
+-- On LEFT_PAREN shift to state 17
+-- On IDENT shift to state 18
+-- On typ shift to state 21
+## Reductions:
+
+State 18:
+## Known stack suffix:
+## IDENT
+## LR(1) items:
+typ -> IDENT . [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+typ -> IDENT . ARROW typ [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+## Transitions:
+-- On ARROW shift to state 19
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF
+--   reduce production typ -> IDENT
+
+State 19:
+## Known stack suffix:
+## IDENT ARROW
+## LR(1) items:
+typ -> IDENT ARROW . typ [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+## Transitions:
+-- On LEFT_PAREN shift to state 17
+-- On IDENT shift to state 18
+-- On typ shift to state 20
+## Reductions:
+
+State 20:
+## Known stack suffix:
+## IDENT ARROW typ
+## LR(1) items:
+typ -> IDENT ARROW typ . [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF
+--   reduce production typ -> IDENT ARROW typ
+
+State 21:
+## Known stack suffix:
+## LEFT_PAREN typ
+## LR(1) items:
+typ -> LEFT_PAREN typ . RIGHT_PAREN [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+typ -> LEFT_PAREN typ . RIGHT_PAREN ARROW typ [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+## Transitions:
+-- On RIGHT_PAREN shift to state 22
+## Reductions:
+
+State 22:
+## Known stack suffix:
+## LEFT_PAREN typ RIGHT_PAREN
+## LR(1) items:
+typ -> LEFT_PAREN typ RIGHT_PAREN . [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+typ -> LEFT_PAREN typ RIGHT_PAREN . ARROW typ [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+## Transitions:
+-- On ARROW shift to state 23
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF
+--   reduce production typ -> LEFT_PAREN typ RIGHT_PAREN
+
+State 23:
+## Known stack suffix:
+## LEFT_PAREN typ RIGHT_PAREN ARROW
+## LR(1) items:
+typ -> LEFT_PAREN typ RIGHT_PAREN ARROW . typ [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+## Transitions:
+-- On LEFT_PAREN shift to state 17
+-- On IDENT shift to state 18
+-- On typ shift to state 24
+## Reductions:
+
+State 24:
+## Known stack suffix:
+## LEFT_PAREN typ RIGHT_PAREN ARROW typ
+## LR(1) items:
+typ -> LEFT_PAREN typ RIGHT_PAREN ARROW typ . [ TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF
+--   reduce production typ -> LEFT_PAREN typ RIGHT_PAREN ARROW typ
+
+State 25:
+## Known stack suffix:
+## FN IDENT COLON typ
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FN IDENT COLON typ . expr [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> FN IDENT COLON typ . expr COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 1
+-- On STRING shift to state 2
+-- On LEFT_PAREN shift to state 3
+-- On LEFT_BRACK shift to state 4
+-- On INT shift to state 26
+-- On IDENT shift to state 27
+-- On FN shift to state 28
+-- On FLOAT shift to state 32
+-- On FALSE shift to state 33
+-- On expr shift to state 35
+## Reductions:
+
+State 26:
+## Known stack suffix:
+## INT
+## LR(1) items:
+expr -> INT . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> INT
+
+State 27:
+## Known stack suffix:
+## IDENT
+## LR(1) items:
+expr -> IDENT . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> IDENT
+
+State 28:
+## Known stack suffix:
+## FN
+## LR(1) items:
+expr -> FN . IDENT COLON typ expr [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+-- On IDENT shift to state 29
+## Reductions:
+
+State 29:
+## Known stack suffix:
+## FN IDENT
+## LR(1) items:
+expr -> FN IDENT . COLON typ expr [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+-- On COLON shift to state 30
+## Reductions:
+
+State 30:
+## Known stack suffix:
+## FN IDENT COLON
+## LR(1) items:
+expr -> FN IDENT COLON . typ expr [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+-- On LEFT_PAREN shift to state 17
+-- On IDENT shift to state 18
+-- On typ shift to state 31
+## Reductions:
+
+State 31:
+## Known stack suffix:
+## FN IDENT COLON typ
+## LR(1) items:
+expr -> FN IDENT COLON typ . expr [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+-- On TRUE shift to state 1
+-- On STRING shift to state 2
+-- On LEFT_PAREN shift to state 3
+-- On LEFT_BRACK shift to state 4
+-- On INT shift to state 26
+-- On IDENT shift to state 27
+-- On FN shift to state 28
+-- On FLOAT shift to state 32
+-- On FALSE shift to state 33
+-- On expr shift to state 34
+## Reductions:
+
+State 32:
+## Known stack suffix:
+## FLOAT
+## LR(1) items:
+expr -> FLOAT . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> FLOAT
+
+State 33:
+## Known stack suffix:
+## FALSE
+## LR(1) items:
+expr -> FALSE . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> FALSE
+
+State 34:
+## Known stack suffix:
+## FN IDENT COLON typ expr
+## LR(1) items:
+expr -> FN IDENT COLON typ expr . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> FN IDENT COLON typ expr
+
+State 35:
+## Known stack suffix:
+## FN IDENT COLON typ expr
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FN IDENT COLON typ expr . [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> FN IDENT COLON typ expr . COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On COMMA shift to state 36
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> FN IDENT COLON typ expr
+
+State 36:
+## Known stack suffix:
+## FN IDENT COLON typ expr COMMA
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FN IDENT COLON typ expr COMMA . separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 43
+## Reductions:
+
+State 37:
+## Known stack suffix:
+## FLOAT
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FLOAT . [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> FLOAT . COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On COMMA shift to state 38
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> FLOAT
+
+State 38:
+## Known stack suffix:
+## FLOAT COMMA
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FLOAT COMMA . separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 42
+## Reductions:
+
+State 39:
+## Known stack suffix:
+## FALSE
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FALSE . [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> FALSE . COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On COMMA shift to state 40
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> FALSE
+
+State 40:
+## Known stack suffix:
+## FALSE COMMA
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FALSE COMMA . separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 41
+## Reductions:
+
+State 41:
+## Known stack suffix:
+## FALSE COMMA separated_nonempty_list(COMMA,value)
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FALSE COMMA separated_nonempty_list(COMMA,value) . [ RIGHT_BRACK ]
+## Transitions:
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> FALSE COMMA separated_nonempty_list(COMMA,value)
+
+State 42:
+## Known stack suffix:
+## FLOAT COMMA separated_nonempty_list(COMMA,value)
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FLOAT COMMA separated_nonempty_list(COMMA,value) . [ RIGHT_BRACK ]
+## Transitions:
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> FLOAT COMMA separated_nonempty_list(COMMA,value)
+
+State 43:
+## Known stack suffix:
+## FN IDENT COLON typ expr COMMA separated_nonempty_list(COMMA,value)
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> FN IDENT COLON typ expr COMMA separated_nonempty_list(COMMA,value) . [ RIGHT_BRACK ]
+## Transitions:
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> FN IDENT COLON typ expr COMMA separated_nonempty_list(COMMA,value)
+
+State 44:
+## Known stack suffix:
+## IDENT COMMA separated_nonempty_list(COMMA,value)
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> IDENT COMMA separated_nonempty_list(COMMA,value) . [ RIGHT_BRACK ]
+## Transitions:
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> IDENT COMMA separated_nonempty_list(COMMA,value)
+
+State 45:
+## Known stack suffix:
+## INT COMMA separated_nonempty_list(COMMA,value)
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> INT COMMA separated_nonempty_list(COMMA,value) . [ RIGHT_BRACK ]
+## Transitions:
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> INT COMMA separated_nonempty_list(COMMA,value)
+
+State 46:
+## Known stack suffix:
+## separated_nonempty_list(COMMA,value)
+## LR(1) items:
+loption(separated_nonempty_list(COMMA,value)) -> separated_nonempty_list(COMMA,value) . [ RIGHT_BRACK ]
+## Transitions:
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production loption(separated_nonempty_list(COMMA,value)) -> separated_nonempty_list(COMMA,value)
+
+State 47:
+## Known stack suffix:
+## LEFT_BRACK loption(separated_nonempty_list(COMMA,value))
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) . RIGHT_BRACK [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) . RIGHT_BRACK COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On RIGHT_BRACK shift to state 48
+## Reductions:
+
+State 48:
+## Known stack suffix:
+## LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK . [ RIGHT_BRACK ]
+separated_nonempty_list(COMMA,value) -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK . COMMA separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On COMMA shift to state 49
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK
+
+State 49:
+## Known stack suffix:
+## LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK COMMA
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK COMMA . separated_nonempty_list(COMMA,value) [ RIGHT_BRACK ]
+## Transitions:
+-- On TRUE shift to state 5
+-- On STRING shift to state 7
+-- On LEFT_BRACK shift to state 9
+-- On INT shift to state 10
+-- On IDENT shift to state 12
+-- On FN shift to state 14
+-- On FLOAT shift to state 37
+-- On FALSE shift to state 39
+-- On separated_nonempty_list(COMMA,value) shift to state 50
+## Reductions:
+
+State 50:
+## Known stack suffix:
+## LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK COMMA separated_nonempty_list(COMMA,value)
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK COMMA separated_nonempty_list(COMMA,value) . [ RIGHT_BRACK ]
+## Transitions:
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK COMMA separated_nonempty_list(COMMA,value)
+
+State 51:
+## Known stack suffix:
+## STRING COMMA separated_nonempty_list(COMMA,value)
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> STRING COMMA separated_nonempty_list(COMMA,value) . [ RIGHT_BRACK ]
+## Transitions:
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> STRING COMMA separated_nonempty_list(COMMA,value)
+
+State 52:
+## Known stack suffix:
+## TRUE COMMA separated_nonempty_list(COMMA,value)
+## LR(1) items:
+separated_nonempty_list(COMMA,value) -> TRUE COMMA separated_nonempty_list(COMMA,value) . [ RIGHT_BRACK ]
+## Transitions:
+## Reductions:
+-- On RIGHT_BRACK
+--   reduce production separated_nonempty_list(COMMA,value) -> TRUE COMMA separated_nonempty_list(COMMA,value)
+
+State 53:
+## Known stack suffix:
+## LEFT_BRACK loption(separated_nonempty_list(COMMA,value))
+## LR(1) items:
+expr -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) . RIGHT_BRACK [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+-- On RIGHT_BRACK shift to state 54
+## Reductions:
+
+State 54:
+## Known stack suffix:
+## LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK
+## LR(1) items:
+expr -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> LEFT_BRACK loption(separated_nonempty_list(COMMA,value)) RIGHT_BRACK
+
+State 55:
+## Known stack suffix:
+## list(expr)
+## LR(1) items:
+exprs -> list(expr) . [ RIGHT_PAREN ]
+## Transitions:
+## Reductions:
+-- On RIGHT_PAREN
+--   reduce production exprs -> list(expr)
+
+State 56:
+## Known stack suffix:
+## LEFT_PAREN exprs
+## LR(1) items:
+expr -> LEFT_PAREN exprs . RIGHT_PAREN [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+-- On RIGHT_PAREN shift to state 57
+## Reductions:
+
+State 57:
+## Known stack suffix:
+## LEFT_PAREN exprs RIGHT_PAREN
+## LR(1) items:
+expr -> LEFT_PAREN exprs RIGHT_PAREN . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> LEFT_PAREN exprs RIGHT_PAREN
+
+State 58:
+## Known stack suffix:
+## LEFT_PAREN expr
+## LR(1) items:
+expr -> LEFT_PAREN expr . RIGHT_PAREN [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+list(expr) -> expr . list(expr) [ RIGHT_PAREN ]
+## Transitions:
+-- On TRUE shift to state 1
+-- On STRING shift to state 2
+-- On RIGHT_PAREN shift to state 59
+-- On LEFT_PAREN shift to state 3
+-- On LEFT_BRACK shift to state 4
+-- On INT shift to state 26
+-- On IDENT shift to state 27
+-- On FN shift to state 28
+-- On FLOAT shift to state 32
+-- On FALSE shift to state 33
+-- On list(expr) shift to state 60
+-- On expr shift to state 61
+## Reductions:
+-- On RIGHT_PAREN
+--   reduce production list(expr) ->
+** Conflict on RIGHT_PAREN
+
+State 59:
+## Known stack suffix:
+## LEFT_PAREN expr RIGHT_PAREN
+## LR(1) items:
+expr -> LEFT_PAREN expr RIGHT_PAREN . [ TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA ]
+## Transitions:
+## Reductions:
+-- On TRUE STRING RIGHT_PAREN RIGHT_BRACK LEFT_PAREN LEFT_BRACK INT IDENT FN FLOAT FALSE EOF COMMA
+--   reduce production expr -> LEFT_PAREN expr RIGHT_PAREN
+
+State 60:
+## Known stack suffix:
+## expr list(expr)
+## LR(1) items:
+list(expr) -> expr list(expr) . [ RIGHT_PAREN ]
+## Transitions:
+## Reductions:
+-- On RIGHT_PAREN
+--   reduce production list(expr) -> expr list(expr)
+
+State 61:
+## Known stack suffix:
+## expr
+## LR(1) items:
+list(expr) -> expr . list(expr) [ RIGHT_PAREN ]
+## Transitions:
+-- On TRUE shift to state 1
+-- On STRING shift to state 2
+-- On LEFT_PAREN shift to state 3
+-- On LEFT_BRACK shift to state 4
+-- On INT shift to state 26
+-- On IDENT shift to state 27
+-- On FN shift to state 28
+-- On FLOAT shift to state 32
+-- On FALSE shift to state 33
+-- On list(expr) shift to state 60
+-- On expr shift to state 61
+## Reductions:
+-- On RIGHT_PAREN
+--   reduce production list(expr) ->
+
+State 62:
+## Known stack suffix:
+## EOF
+## LR(1) items:
+expr_opt -> EOF . [ # ]
+## Transitions:
+## Reductions:
+-- On #
+--   reduce production expr_opt -> EOF
+
+State 63:
+## Known stack suffix:
+## expr_opt
+## LR(1) items:
+expr_opt' -> expr_opt . [ # ]
+## Transitions:
+## Reductions:
+-- On #
+--   accept expr_opt
+
+State 64:
+## Known stack suffix:
+## expr
+## LR(1) items:
+expr_opt -> expr . EOF [ # ]
+## Transitions:
+-- On EOF shift to state 65
+## Reductions:
+
+State 65:
+## Known stack suffix:
+## expr EOF
+## LR(1) items:
+expr_opt -> expr EOF . [ # ]
+## Transitions:
+## Reductions:
+-- On #
+--   reduce production expr_opt -> expr EOF
+
+State 66:
+## Known stack suffix:
+##
+## LR(1) items:
+typ_opt' -> . typ_opt [ # ]
+## Transitions:
+-- On LEFT_PAREN shift to state 17
+-- On IDENT shift to state 18
+-- On EOF shift to state 67
+-- On typ_opt shift to state 68
+-- On typ shift to state 69
+## Reductions:
+
+State 67:
+## Known stack suffix:
+## EOF
+## LR(1) items:
+typ_opt -> EOF . [ # ]
+## Transitions:
+## Reductions:
+-- On #
+--   reduce production typ_opt -> EOF
+
+State 68:
+## Known stack suffix:
+## typ_opt
+## LR(1) items:
+typ_opt' -> typ_opt . [ # ]
+## Transitions:
+## Reductions:
+-- On #
+--   accept typ_opt
+
+State 69:
+## Known stack suffix:
+## typ
+## LR(1) items:
+typ_opt -> typ . EOF [ # ]
+## Transitions:
+-- On EOF shift to state 70
+## Reductions:
+
+State 70:
+## Known stack suffix:
+## typ EOF
+## LR(1) items:
+typ_opt -> typ EOF . [ # ]
+## Transitions:
+## Reductions:
+-- On #
+--   reduce production typ_opt -> typ EOF
+
