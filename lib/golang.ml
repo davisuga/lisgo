@@ -1,6 +1,27 @@
 let format = Printf.sprintf
 
-type bin_operation = Add | Sub | Mul | Div | Mod | Eq | Neq | Lt | Leq | Gt | Geq
+type bin_operation =
+  | Add
+  | Sub
+  | Mul
+  | Div
+  | Mod
+  | Eq
+  | Neq
+  | Lt
+  | Leq
+  | Gt
+  | Geq
+  | Remainder
+  | BitwiseOR
+  | BitwiseXOR
+  | BitwiseAND
+  | BitwiseClear
+  | LeftShift
+  | RightShift
+  | Or
+  | And
+
 type import = { name : string option; path : string }
 
 module Types = struct
@@ -164,7 +185,16 @@ module CodeGen = struct
         | Lt -> "<"
         | Leq -> "<="
         | Gt -> ">"
-        | Geq -> ">=")
+        | Geq -> ">="
+        | Or -> "||"
+        | And -> "&&"
+        | Remainder -> "%"
+        | BitwiseAND -> "&"
+        | BitwiseOR -> "|"
+        | BitwiseXOR -> "^"
+        | BitwiseClear -> "&^"
+        | LeftShift -> "<<"
+        | RightShift -> ">>")
         (of_expr right)
 
   open Types
