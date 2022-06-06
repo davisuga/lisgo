@@ -52,11 +52,14 @@ end
 module AST = struct
   open Types
 
+  type unary_operator = UnaryPlus | UnaryNegation | Not | BitwiseComplement | AddressOf
+
   type expr =
     | Int of int
     | String of string
     | Ident of string
     | Application of { func : expr; args : expr list }
+    | UnaryOp of { op : unary_operator; expr : expr }
     | BinExpr of { op : bin_operation; left : expr; right : expr }
     | True
     | False
@@ -168,6 +171,16 @@ module CodeGen = struct
     | False -> "false"
     | Float f -> string_of_float f
     | Ident s -> s
+    | UnaryOp { op; expr } ->
+      format
+        "%s%s"
+        (of_expr expr)
+        (match op with
+        | UnaryPlus -> "+"
+        | UnaryNegation -> "-"
+        | Not -> "!"
+        | BitwiseComplement -> "~"
+        | AddressOf -> "&")
     | Application { func; args } ->
       format "%s(%s)" (of_expr func) (List.map of_expr args |> String.concat " ")
     | BinExpr { op; left; right } ->
