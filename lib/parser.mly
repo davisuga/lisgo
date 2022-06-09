@@ -40,6 +40,8 @@ let sub_typ ==
      }
   | LEFT_PAREN; t = typ; RIGHT_PAREN; { t }
 
+
+
 let typ :=
   | sub_typ
   | t1 = sub_typ; ARROW; t2 = typ;
@@ -52,6 +54,8 @@ let expr_opt :=
 let list_fields ==
     vl = separated_list(COMMA, value); { vl } 
 
+let function_parameter == param = IDENT; COLON; param_type = typ; { param, param_type }
+
 let value ==
   | i = INT; { Int i }
   | s = STRING; { String s }
@@ -59,8 +63,8 @@ let value ==
   | f = FLOAT; { Float f }
   | TRUE; { True }
   | FALSE; { False }
-  | FN; param = IDENT; COLON; param_type = typ; body = expr;
-    { Abstraction { param; param_type ; body } }
+  | FN; params = separated_list(COMMA, function_parameter); body = expr;
+    { Abstraction { params; body } }
   | LEFT_BRACK; vl = list_fields; RIGHT_BRACK; { List vl  }
 
   
