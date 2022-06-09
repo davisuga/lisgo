@@ -14,7 +14,8 @@ type expr =
   | Unit
 [@@deriving show { with_path = false }]
 
-and abstraction_expr = { param_type : typ; param : string; body : expr }
+and abstraction_param = string * typ
+and abstraction_expr = { params : abstraction_param list; body : expr }
 and application_expr = { func : expr; arg : expr }
 
 let parse_sexpr expr_list =
@@ -36,8 +37,7 @@ let _ =
         List
           [ Variable "fib";
             Abstraction
-              { param_type = TInt;
-                param = "n";
+              { params = [ "n", TInt ];
                 body =
                   Application
                     { func = Variable "if";
@@ -75,5 +75,3 @@ let _ =
               }
           ]
     }
-
-
