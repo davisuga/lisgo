@@ -62,9 +62,15 @@ let rec infer context expr =
     (match Ctx.find_opt name context with
     | Some typ -> typ
     | None -> raise @@ Type_error ("Could not find variable: " ^ name))
-  | Abstraction { param; param_type; body } ->
-    let context = Ctx.add param param_type context in
+  | Abstraction { params; body } ->
+    let context =
+      List.fold_left
+        (fun type_context (param, param_type) -> Ctx.add param param_type type_context)
+        context
+        params
+    in
     let body_typ = infer context body in
+    let param_type = List.map snd params |> wrap_type_params in
     TArrow { param_type; body_typ }
   | Application { func; arg } ->
     let func_typ = infer context func in
@@ -91,7 +97,13 @@ let initial_type_context =
   |> Ctx.add
        "+"
        (TArrow
-          { param_type = TInt; body_typ = TArrow { param_type = TInt; body_typ = TInt } })
+          { param_type = TInt;
+            body_typ = TArrow { param_type = TList TInt; body_typ = TInt }
+          })
+  |> Ctx.add
+       "if"
+       (TArrow
+          { param_type = TBool; body_typ = TArrow { param_type = TInt; body_typ = TInt } })
 
 let getarg_opt n =
   try Some Sys.argv.(n) with
@@ -117,10 +129,10 @@ let print_prog_info p =
   |> Option.get
   |> fun ast ->
   Format.printf "AST: %a\n%!" Expr.pp_expr ast;
-  (* ast *)
-  (* |> infer initial_type_context
+  ast
+  |> infer initial_type_context
   |> fun typ ->
-  Format.printf "TYPE: %a\n%!" Typ.pp_typ typ; *)
+  Format.printf "TYPE: %a\n%!" Typ.pp_typ typ;
   ast
 
 type 'a localized = { start_pos : int; end_pos : int; value : 'a }
