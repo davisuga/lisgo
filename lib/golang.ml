@@ -45,6 +45,7 @@ module Types = struct
     | TPointer of t
     | TVoid
     | TFunction of { args : func_type_parameter list; ret : t }
+    | TAny
 
   and func_type_parameter = { name : string; typ : t }
 end
@@ -64,6 +65,7 @@ module AST = struct
     | True
     | False
     | Float of float
+    | FuncLit of { args : func_type_parameter list; body : expr }
 
   type stmt =
     | DeclStmt of { name : string; value : expr }
@@ -162,6 +164,37 @@ end
 
 module CodeGen = struct
   open AST
+  open Types
+
+  let rec of_typ typ =
+    match typ with
+    | TInt -> "int"
+    | TInt8 -> "int8"
+    | TInt16 -> "int16"
+    | TInt32 -> "int32"
+    | TInt64 -> "int64"
+    | TUint8 -> "uint8"
+    | TUint16 -> "uint16"
+    | TUint32 -> "uint32"
+    | TUint64 -> "uint64"
+    | TUintptr -> "uintptr"
+    | TFloat32 -> "float32"
+    | TFloat64 -> "float64"
+    | TVoid -> ""
+    | TStr -> "string"
+    | TBool -> "bool"
+    | TList t -> format "[]%s" (of_typ t)
+    | TStruct { name } -> name
+    | TAny -> "interface{}"
+    | TPointer t -> "*" ^ of_typ t
+    | TFunction { args; ret } ->
+      format
+        {|func(%s) %s|}
+        (List.map of_type_parameter args |> String.concat ", ")
+        (of_typ ret)
+
+  and of_type_parameter (param : func_type_parameter) =
+    format "%s %s" param.name (of_typ param.typ)
 
   let rec of_expr expr =
     match expr with
@@ -171,6 +204,11 @@ module CodeGen = struct
     | False -> "false"
     | Float f -> string_of_float f
     | Ident s -> s
+    | FuncLit { args; body } ->
+      format
+        "func (%s) { %s }"
+        (args |> List.map of_type_parameter |> String.concat ", ")
+        (of_expr body)
     | UnaryOp { op; expr } ->
       format
         "%s%s"
@@ -209,37 +247,6 @@ module CodeGen = struct
         | LeftShift -> "<<"
         | RightShift -> ">>")
         (of_expr right)
-
-  open Types
-
-  let rec of_typ typ =
-    match typ with
-    | TInt -> "int"
-    | TInt8 -> "int8"
-    | TInt16 -> "int16"
-    | TInt32 -> "int32"
-    | TInt64 -> "int64"
-    | TUint8 -> "uint8"
-    | TUint16 -> "uint16"
-    | TUint32 -> "uint32"
-    | TUint64 -> "uint64"
-    | TUintptr -> "uintptr"
-    | TFloat32 -> "float32"
-    | TFloat64 -> "float64"
-    | TVoid -> ""
-    | TStr -> "string"
-    | TBool -> "bool"
-    | TList t -> format "[]%s" (of_typ t)
-    | TStruct { name } -> name
-    | TPointer t -> "*" ^ of_typ t
-    | TFunction { args; ret } ->
-      format
-        {|func(%s) %s|}
-        (List.map of_type_parameter args |> String.concat ", ")
-        (of_typ ret)
-
-  and of_type_parameter (param : func_type_parameter) =
-    format "%s %s" param.name (of_typ param.typ)
 
   let rec of_statement stmt =
     match stmt with
