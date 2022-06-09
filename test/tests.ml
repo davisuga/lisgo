@@ -33,6 +33,7 @@ let expected_typ_print_pairs =
   ]
 
 let expected_declaration_print_pairs =
+  let open AST in
   [ ( FunDeclaration { name = "main"; body = []; params = []; ret = TVoid },
       "func main()  {\n}\n" );
     ( FunDeclaration
@@ -47,7 +48,9 @@ let expected_declaration_print_pairs =
 [@@@ocamlformat "disable=true"]
 
 let expected_file_print_pairs =
-[ empty_file, "package main\n\nfunc main()  {\n}\n";
+  let open AST in
+
+  [ empty_file, "package main\n\nfunc main()  {\n}\n";
   ( hello_word,
     "package main\n\n\
      import (\n\
@@ -84,7 +87,7 @@ let test_declarations_print () =
 
 let test_file_prints () = test_codegen_results test_file_print expected_file_print_pairs
 let test_types_print () = expected_typ_print_pairs |> List.map test_type_print |> ignore
-
+(* 
 let expected_asts =   
   let open Lisgo.Expr in
   let if_fib_ast =  (SExpr
@@ -114,12 +117,12 @@ let expected_asts =
 "(fn n:int (+ n n))", Abstraction {param_type = TInt; param = "n";
 body = (SExpr [(Variable "+"); (Variable "n"); (Variable "n")])};
 "(def fib (fun n:int (if (<= n 1) (n)  (+ (fib (- n 1)) (fib (- n 2))))))", (SExpr [])
-]
+] *)
 
-let test_info () =  
+(* let test_info () =  
   
   [ "1"; "\"1\""; "+"; "1.1"; "true"; "false"; "(+ 1)" ]
-|> List.map Lisgo.Lib.print_prog_info
+|> List.map Lisgo.Lib.print_prog_info *)
 
 (* Run it *)
 let () =
@@ -133,8 +136,8 @@ let () =
     ];
   run "Parsing" 
   [
-    "some expressions", [
+    (* "some expressions", [
       test_case "Parsing of simple expressions" `Quick Parser.parse_expression "1 + 2"
     
-    ]
+    ] *)
   ]
